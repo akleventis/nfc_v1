@@ -7,7 +7,7 @@ const createContentfulClient = () => {
 
   const client = createClient({
     accessToken: apiKey,
-    space: spaceID,
+    space: spaceID, 
   });
   return client;
 };

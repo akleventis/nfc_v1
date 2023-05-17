@@ -48,12 +48,11 @@ export const createRouteMapping = (entries, person) => {
   return routes;
 };
 
-const Writer = ({ text, index }) => {
+const Writer = ({ text }) => {
   const container = (
     <div className="write-container">
       <div>
         <Typewriter
-          key={index}
           onInit={(typewriter) => {
             typewriter.typeString(text).changeDelay(1).start();
           }}
@@ -67,22 +66,35 @@ const Writer = ({ text, index }) => {
   return container;
 };
 
-// Page content
 const Main = ({ textBoxes, imageURL, person }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (currentIndex < textBoxes.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      }
+    }, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [currentIndex, textBoxes]);
+
   return (
     <>
       <Head>
         <title>Dear {person}</title>
       </Head>
       <section style={{ backgroundImage: `url(${imageURL})` }}>
-        {textBoxes.map((text, i) => {
+        
+        {textBoxes != undefined && textBoxes.slice(0, currentIndex + 1).map((text, i) => {
           return <Writer text={text} index={i} key={i} />;
         })}
       </section>
     </>
   );
 };
-
 export default function Page({ entries }) {
   const [page, setPage] = useState();
   const router = useRouter();
