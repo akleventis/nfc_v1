@@ -4,6 +4,25 @@ import Head from "next/head";
 import { getContent } from "../../lib/contentful.jsx";
 import { handleCookies } from "../../lib/cookies.jsx";
 import Typewriter from "typewriter-effect";
+import twemoji from "twemoji";
+
+// allow for emojis across all devices
+const convertTextToTwemoji = (text) => {
+  return twemoji.parse(text, {
+    folder: "svg",
+    ext: ".svg",
+  });
+};
+
+export async function getStaticProps(context) {
+  const entries = getContent("entries")
+  return {
+    props: {
+      entries: entries
+    },
+    revalidate: 60,
+  }
+}
 
 // createRouteMapping builds index based component page routes map{index: <component/>}
 export const createRouteMapping = (entries, person) => {
@@ -46,6 +65,21 @@ const Writer = ({ text }) => {
   return container;
 };
 
+// header
+const Head = ({ person }) => {
+  return (
+    <Head>
+      <title>Dear {person}</title>
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link
+        rel="stylesheet"
+        href="https://twemoji.maxcdn.com/v/latest/twemoji.css"
+      />
+    </Head>
+  );
+};
+
 // main page content
 const Main = ({ textBoxes, imageURL, person }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -64,19 +98,12 @@ const Main = ({ textBoxes, imageURL, person }) => {
 
   return (
     <>
-      <Head>
-        <title>Dear {person}</title>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-          rel="stylesheet"
-          href="https://twemoji.maxcdn.com/v/latest/twemoji.css"
-        />
-      </Head>
+      <Head person={person} />
       <section style={{ backgroundImage: `url(${imageURL})` }}>
         {textBoxes != undefined &&
           textBoxes.slice(0, currentIndex + 1).map((text, i) => {
-            return <Writer text={text} index={i} key={i} />;
+            const convertedText = convertTextToTwemoji(text);
+            return <Writer text={convertedText} index={i} key={i} />;
           })}
       </section>
     </>
