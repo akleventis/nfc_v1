@@ -1,8 +1,8 @@
 import Cookies from "js-cookie";
 
 // handleCookies encapsulates all cookie logic for application
-export const handleCookies = (setPage, routes) => {
-  const pageNumber = `page_number`;
+export const handleCookies = (setPage, routes, name) => {
+  const pageNumber = `${name}_page_number`;
   const maxPage = Object.keys(routes).length - 1;
 
   // Grab page number cookie value if present

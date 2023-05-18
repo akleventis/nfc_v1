@@ -5,35 +5,14 @@ import { getContent } from "../../lib/contentful.jsx";
 import { handleCookies } from "../../lib/cookies.jsx";
 import Typewriter from "typewriter-effect";
 
-/**
-  Two calls api calls are needed for render
-  1. Define routes (getStaticPaths): Which creates the route, passing [name] to getStaticProps
-  2. Fill content (getStaticProps): Receives [name] and generates data to pass to the page component as props
-  Both called server-side (pre-render)
- */
-export async function getStaticPaths() {
-  let paths = await getContent("paths");
-  return {
-    paths: paths,
-    fallback: "blocking",
-  };
-}
-
-export async function getStaticProps() {
-  let entries = await getContent("entries");
-  return {
-    props: { entries: entries },
-  };
-}
-
 // createRouteMapping builds index based component page routes map{index: <component/>}
 export const createRouteMapping = (entries, person) => {
   let routes = {};
   entries.map((entry) => {
     if (entry.title === person) {
       entry.pages.forEach((page, i) => {
-        const textBoxes = page.fields.text;
-        const imageURL = page.fields.image.fields.file.url;
+        const textBoxes = page.fields.text && page.fields.text;
+        const imageURL = page.fields.image && page.fields.image.fields.file.url;
         routes[i] = (
           <Main
             key={i}
@@ -48,6 +27,7 @@ export const createRouteMapping = (entries, person) => {
   return routes;
 };
 
+// typewriter effect component
 const Writer = ({ text }) => {
   const container = (
     <div className="write-container">
@@ -66,6 +46,7 @@ const Writer = ({ text }) => {
   return container;
 };
 
+// main page content
 const Main = ({ textBoxes, imageURL, person }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -85,27 +66,49 @@ const Main = ({ textBoxes, imageURL, person }) => {
     <>
       <Head>
         <title>Dear {person}</title>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+          rel="stylesheet"
+          href="https://twemoji.maxcdn.com/v/latest/twemoji.css"
+        />
       </Head>
       <section style={{ backgroundImage: `url(${imageURL})` }}>
-        
-        {textBoxes != undefined && textBoxes.slice(0, currentIndex + 1).map((text, i) => {
-          return <Writer text={text} index={i} key={i} />;
-        })}
+        {textBoxes != undefined &&
+          textBoxes.slice(0, currentIndex + 1).map((text, i) => {
+            return <Writer text={text} index={i} key={i} />;
+          })}
       </section>
     </>
   );
 };
-export default function Page({ entries }) {
+
+export default function Page() {
   const [page, setPage] = useState();
   const router = useRouter();
-  let person = router.query.name;
+  let name = router.query && router.query.name ? router.query.name : "";
 
   // We'll be using the 'page_number' cookie value (int) as the key in
   // routes hash map to determine which page to display
   useEffect(() => {
-    const routes = createRouteMapping(entries, person);
-    handleCookies(setPage, routes);
-  }, []);
+    const render = async () => {
+      try {
+        // get entries from cms
+        let entries = await getContent("entries");
+
+        // create index based component map
+        const routes = createRouteMapping(entries, name);
+
+        // handle cookies accordingly
+        handleCookies(setPage, routes, name);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (router.query && router.query.name) {
+      render();
+    }
+  }, [router.query]);
 
   return <div>{page}</div>;
 }
