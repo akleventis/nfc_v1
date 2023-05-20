@@ -48,7 +48,7 @@ const Main = ({ textBoxes, imageURL, person }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (currentIndex < textBoxes.length - 1) {
+      if (textBoxes !== undefined && currentIndex < textBoxes.length - 1) {
         setCurrentIndex(currentIndex + 1);
       }
     }, 5000);
@@ -84,7 +84,7 @@ export default function Page() {
       try {
         let entries = await getEntries(); // get entries from cms
         let routes = createRouteMapping(entries, name); // create index based component map
-        handleCookies(setPage, routes, name); // handle cookies accordingly
+        name !== "" && handleCookies(setPage, routes, name); // handle cookies accordingly
       } catch (error) {
         console.log(error);
       }

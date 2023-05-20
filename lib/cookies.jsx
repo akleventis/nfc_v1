@@ -33,7 +33,7 @@ export const handleCookies = (setPage, routes, name) => {
     return;
   }
 
-  // incremenet index
+  // increment index
   var newIndex = parseInt(cIndex) + 1;
   if (newIndex == maxPage) {
     removeCookies(pCookie, tsCookie);
