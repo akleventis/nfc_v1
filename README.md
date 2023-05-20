@@ -5,14 +5,14 @@
 
 ### OoOf
 ---
-- My initial assumption was setting the route based on the device's user agent... which resulted in the unnecessary creation of a server. This server used redis storage to persist/increment count according to the browsers user agent. Returning an index which the client then use to display the correct page. 
-- But this of course can all be accomplished through user cookies.
+- My initial assumption was to set the route based on the clients user agent... which resulted in the unnecessary creation of a server. This server used redis storage to persist/increment count according to the browsers user agent. Returning an index which the client then use to display the correct page. 
+- But this of course can all be accomplished through user cookies. 
 - So.. scrap server, implement cookies.
 
 ### Let's goo
 ---
 - It was around this time, ideas started flowing...
-- I bought a bunch of nfc tags and came up with the idea of sending them out to friends as a sort of "letter".
+- I bought a bunch of nfc tags and came up with a concept of sending them out to friends as sort of "letters".
 - But instead of paper and pen, it's interactive through a mobile device.
 ---
 
@@ -42,6 +42,6 @@
 ]
 
 ```
-- Each route is dynamically created based on the entries recieved from this list
-- To create a new 'letter,' you simply need to add an entry to the CMS. No additional coding is required 😎
+- Each route is dynamically created based on the entries received from this list
+- To create a new 'letter,' simply add an entry to the CMS. No additional coding required 😎
 

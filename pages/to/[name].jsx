@@ -1,31 +1,12 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import { getContent } from "../../lib/contentful.jsx";
+import { getEntries, convertTextToTwemoji } from "../../lib/contentful.jsx";
 import { handleCookies } from "../../lib/cookies.jsx";
 import Typewriter from "typewriter-effect";
-import twemoji from "twemoji";
-
-// allow for emojis across all devices
-const convertTextToTwemoji = (text) => {
-  return twemoji.parse(text, {
-    folder: "svg",
-    ext: ".svg",
-  });
-};
-
-export async function getStaticProps(context) {
-  const entries = getContent("entries")
-  return {
-    props: {
-      entries: entries
-    },
-    revalidate: 60,
-  }
-}
 
 // createRouteMapping builds index based component page routes map{index: <component/>}
-export const createRouteMapping = (entries, person) => {
+const createRouteMapping = (entries, person) => {
   let routes = {};
   entries.map((entry) => {
     if (entry.title === person) {
@@ -48,39 +29,20 @@ export const createRouteMapping = (entries, person) => {
 
 // typewriter effect component
 const Writer = ({ text }) => {
-  const container = (
+  return (
     <div className="write-container">
-      <div>
-        <Typewriter
-          onInit={(typewriter) => {
-            typewriter.typeString(text).changeDelay(1).start();
-          }}
-          options={{
-            delay: 40,
-          }}
-        />
-      </div>
+      <Typewriter
+        onInit={(typewriter) => {
+          typewriter.typeString(text).changeDelay(1).start();
+        }}
+        options={{
+          delay: 40,
+        }}
+      />
     </div>
   );
-  return container;
 };
 
-// header
-const Head = ({ person }) => {
-  return (
-    <Head>
-      <title>Dear {person}</title>
-      <meta charSet="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link
-        rel="stylesheet"
-        href="https://twemoji.maxcdn.com/v/latest/twemoji.css"
-      />
-    </Head>
-  );
-};
-
-// main page content
 const Main = ({ textBoxes, imageURL, person }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -90,7 +52,6 @@ const Main = ({ textBoxes, imageURL, person }) => {
         setCurrentIndex(currentIndex + 1);
       }
     }, 5000);
-
     return () => {
       clearTimeout(timer);
     };
@@ -98,12 +59,13 @@ const Main = ({ textBoxes, imageURL, person }) => {
 
   return (
     <>
-      <Head person={person} />
+      <Head>
+        <title>Dear {person}</title>
+      </Head>
       <section style={{ backgroundImage: `url(${imageURL})` }}>
         {textBoxes != undefined &&
           textBoxes.slice(0, currentIndex + 1).map((text, i) => {
-            const convertedText = convertTextToTwemoji(text);
-            return <Writer text={convertedText} index={i} key={i} />;
+            return <Writer text={convertTextToTwemoji(text)} key={i} />;
           })}
       </section>
     </>
@@ -120,21 +82,14 @@ export default function Page() {
   useEffect(() => {
     const render = async () => {
       try {
-        // get entries from cms
-        let entries = await getContent("entries");
-
-        // create index based component map
-        const routes = createRouteMapping(entries, name);
-
-        // handle cookies accordingly
-        handleCookies(setPage, routes, name);
+        let entries = await getEntries(); // get entries from cms
+        let routes = createRouteMapping(entries, name); // create index based component map
+        handleCookies(setPage, routes, name); // handle cookies accordingly
       } catch (error) {
         console.log(error);
       }
     };
-    if (router.query && router.query.name) {
-      render();
-    }
+    render();
   }, [router.query]);
 
   return <div>{page}</div>;

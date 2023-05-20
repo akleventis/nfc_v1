@@ -1,39 +1,36 @@
 import { createClient } from "contentful";
+import twemoji from "twemoji";
 
-// createContentfulClient instantiates our client to interact with the Contentfulexp api
-const createContentfulClient = () => {
-  const spaceID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
-  const apiKey = process.env.NEXT_PUBLIC_CONTENTFUL_TOKEN;
+const contentTypeID = "pages";
+const spaceID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
+const apiKey = process.env.NEXT_PUBLIC_CONTENTFUL_TOKEN;
 
-  const client = createClient({
-    accessToken: apiKey,
-    space: spaceID, 
-  });
-  return client;
-};
+const client = createClient({
+  accessToken: apiKey,
+  space: spaceID,
+});
 
-// getContent reaches out to our headless cms filling in desired content
-// specified by 'mapTo' (ex: 'paths', 'entries' for getStaticPaths() and getStaticProps() respectively)
-export const getContent = async(mapTo) => {
-const client = createContentfulClient();
-  const contentTypeID = "pages";
-  let res = [];
+export const getEntries = async () => {
+  let entries = [];
   try {
     const content = await client.getEntries({
       content_type: contentTypeID,
     });
 
     content.items.map((e) => {
-      switch (mapTo) {
-        case "paths":
-          res.push({ params: { name: e.fields.title } });
-          break;
-        case "entries":
-          res.push(e.fields);
-      }
+      entries.push(e.fields);
     });
   } catch (err) {
     return err;
   }
-  return res;
-}
+
+  return entries;
+};
+
+// allow for emojis across all devices
+export const convertTextToTwemoji = (text) => {
+  return twemoji.parse(text, {
+    folder: "svg",
+    ext: ".svg",
+  });
+};
