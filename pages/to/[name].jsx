@@ -16,6 +16,8 @@ const createRouteMapping = (entries, person) => {
         routes[i] = (
           <Main
             key={i}
+            index={i}
+            maxIndex={entries.length-1}
             textBoxes={textBoxes}
             imageURL={imageURL}
             person={person}
@@ -43,7 +45,7 @@ const Writer = ({ text }) => {
   );
 };
 
-const Main = ({ textBoxes, imageURL, person }) => {
+const Main = ({ textBoxes, imageURL, person, index, maxIndex }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -63,6 +65,7 @@ const Main = ({ textBoxes, imageURL, person }) => {
         <title>Dear {person}</title>
       </Head>
       <section style={{ backgroundImage: `url(${imageURL})` }}>
+        <p>{index+1}/{maxIndex+1}</p>
         {textBoxes != undefined &&
           textBoxes.slice(0, currentIndex + 1).map((text, i) => {
             return <Writer text={convertTextToTwemoji(text)} key={i} />;
