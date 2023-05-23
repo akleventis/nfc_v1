@@ -10,6 +10,7 @@ const createRouteMapping = (entries, person) => {
   let routes = {};
   entries.map((entry) => {
     if (entry.title === person) {
+      let totalPages = entry.pages.length
       entry.pages.forEach((page, i) => {
         const textBoxes = page.fields.text && page.fields.text;
         const imageURL = page.fields.image && page.fields.image.fields.file.url;
@@ -17,7 +18,7 @@ const createRouteMapping = (entries, person) => {
           <Main
             key={i}
             index={i}
-            maxIndex={entries.length-1}
+            totalPages={totalPages}
             textBoxes={textBoxes}
             imageURL={imageURL}
             person={person}
@@ -45,7 +46,7 @@ const Writer = ({ text }) => {
   );
 };
 
-const Main = ({ textBoxes, imageURL, person, index, maxIndex }) => {
+const Main = ({ textBoxes, imageURL, person, index, totalPages }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -65,7 +66,9 @@ const Main = ({ textBoxes, imageURL, person, index, maxIndex }) => {
         <title>Dear {person}</title>
       </Head>
       <section style={{ backgroundImage: `url(${imageURL})` }}>
-        <p>{index+1}/{maxIndex+1}</p>
+        <div>
+        <p>{index+1}/{totalPages}</p>
+        </div>
         {textBoxes != undefined &&
           textBoxes.slice(0, currentIndex + 1).map((text, i) => {
             return <Writer text={convertTextToTwemoji(text)} key={i} />;
