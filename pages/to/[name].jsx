@@ -10,7 +10,7 @@ const createRouteMapping = (entries, person) => {
   let routes = {};
   entries.map((entry) => {
     if (entry.title === person) {
-      let totalPages = entry.pages.length
+      let totalPages = entry.pages.length;
       entry.pages.forEach((page, i) => {
         const textBoxes = page.fields.text && page.fields.text;
         const imageURL = page.fields.image && page.fields.image.fields.file.url;
@@ -45,6 +45,23 @@ const Writer = ({ text }) => {
     </div>
   );
 };
+const ImageLoader = ({ src, children }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const image = new Image();
+    image.src = src;
+    image.onload = () => {
+      setImageLoaded(true);
+    };
+  }, [src]);
+
+  if (!imageLoaded) {
+    return null;
+  }
+
+  return <div>{children}</div>;
+};
 
 const Main = ({ textBoxes, imageURL, person, index, totalPages }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -65,15 +82,19 @@ const Main = ({ textBoxes, imageURL, person, index, totalPages }) => {
       <Head>
         <title>Dear {person}</title>
       </Head>
-      <section style={{ backgroundImage: `url(${imageURL})` }}>
-        <div>
-        <p>{index+1}/{totalPages}</p>
-        </div>
-        {textBoxes != undefined &&
-          textBoxes.slice(0, currentIndex + 1).map((text, i) => {
-            return <Writer text={convertTextToTwemoji(text)} key={i} />;
-          })}
-      </section>
+      <ImageLoader src={imageURL}>
+        <section style={{ backgroundImage: `url(${imageURL})` }}>
+          <div>
+            <p>
+              {index + 1}/{totalPages}
+            </p>
+          </div>
+          {textBoxes != undefined &&
+            textBoxes.slice(0, currentIndex + 1).map((text, i) => {
+              return <Writer text={convertTextToTwemoji(text)} key={i} />;
+            })}
+        </section>
+      </ImageLoader>
     </>
   );
 };
@@ -98,5 +119,12 @@ export default function Page() {
     render();
   }, [router.query]);
 
-  return <div>{page}</div>;
+  return (
+    <>
+      {/* loading screen */}
+      <div class="lds-dual-ring"></div>
+      {/* content */}
+      <div>{page}</div>
+    </>
+  )
 }

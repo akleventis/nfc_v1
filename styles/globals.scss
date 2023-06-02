@@ -59,7 +59,37 @@ section {
     margin: 1em;
     padding: .5em;
     border-radius: 1em;
-    background-color: #ffffffd4;
+    background-color: #ffffffc4;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  }
+}
+
+// spinner https://loading.io/css/
+.lds-dual-ring {
+  display: inline-block;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  transform: translateX(-50%);
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #fff;
+  border-color: #00000091 transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
