@@ -45,7 +45,7 @@ const Writer = ({ text }) => {
     </div>
   );
 };
-const ImageLoader = ({ src, children }) => {
+const ImageLoader = ({ src, children, onImageLoad }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
@@ -53,6 +53,7 @@ const ImageLoader = ({ src, children }) => {
     image.src = src;
     image.onload = () => {
       setImageLoaded(true);
+      onImageLoad()
     };
   }, [src]);
 
@@ -65,24 +66,33 @@ const ImageLoader = ({ src, children }) => {
 
 const Main = ({ textBoxes, imageURL, person, index, totalPages }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  const handleImageLoad = () => {
+    setIsLoaded(true)
+  }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (textBoxes !== undefined && currentIndex < textBoxes.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      }
-    }, 5000);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [currentIndex, textBoxes]);
+    // we don't want to start timout until background image has loaded
+    // passing callback to child component to trigger state change upon load
+    if (isLoaded){      
+      const timer = setTimeout(() => {
+        if (textBoxes !== undefined && currentIndex < textBoxes.length - 1) {
+          setCurrentIndex(currentIndex + 1);
+        }
+      }, 5000);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [currentIndex, textBoxes, isLoaded]);
 
   return (
     <>
       <Head>
         <title>Dear {person}</title>
       </Head>
-      <ImageLoader src={imageURL}>
+      <ImageLoader src={imageURL} onImageLoad={handleImageLoad}>
         <section style={{ backgroundImage: `url(${imageURL})` }}>
           <div>
             <p>

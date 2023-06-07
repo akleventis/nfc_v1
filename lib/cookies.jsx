@@ -16,7 +16,7 @@ const isInvalid = (cTime, cIndex, currentTimestamp) => {
 };
 
 // handleCookies encapsulates all cookie logic for application
-// and sets page state to specified  route
+// and sets page state to specified route accordingly
 export const handleCookies = (setPage, routes, name) => {
   const pCookie = `${name}_page_number`;
   const tsCookie = `${name}_time`;
