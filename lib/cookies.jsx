@@ -12,7 +12,7 @@ const setCookies = (pCookie, page, tsCookie, timeStamp) => {
 
 // if either cookie is nil or more than 10 min old, consider invalid
 const isInvalid = (cTime, cIndex, currentTimestamp) => {
-  return ( cTime === null || cIndex === null || parseInt(cTime) + 10 * 60 < currentTimestamp );
+  return ( cTime === null || cIndex === null ||parseInt(cTime) + 10 * 60 < currentTimestamp );
 };
 
 // handleCookies encapsulates all cookie logic for application
@@ -35,8 +35,9 @@ export const handleCookies = (setPage, routes, name) => {
 
   // increment index
   var newIndex = parseInt(cIndex) + 1;
-  if (newIndex == maxPage) {
+  if (newIndex >= maxPage) {
     removeCookies(pCookie, tsCookie);
+    newIndex = newIndex === maxPage ? newIndex : 0 // edge case for updated content
     setPage(routes[newIndex]);
     return;
   }

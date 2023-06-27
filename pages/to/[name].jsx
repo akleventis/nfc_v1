@@ -5,9 +5,9 @@ import { getEntries, convertTextToTwemoji } from "../../lib/contentful.jsx";
 import { handleCookies } from "../../lib/cookies.jsx";
 import Typewriter from "typewriter-effect";
 
-// createRouteMapping builds index based component page routes map{index: <component/>}
+// createRouteMapping builds index based component page routes array[index: <component/>]
 const createRouteMapping = (entries, person) => {
-  let routes = {};
+  let routes = [];
   entries.map((entry) => {
     if (entry.title === person) {
       let totalPages = entry.pages.length;
