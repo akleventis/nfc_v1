@@ -10,7 +10,7 @@ const setCookies = (pCookie, page, tsCookie, timeStamp) => {
   Cookies.set(tsCookie, timeStamp);
 };
 
-// if either cookie is nil or > 10 min old, consider invalid
+// if either cookie is nil or more than 10 min old, consider invalid
 const isInvalid = (cTime, cIndex, currentTimestamp) => {
   return ( cTime === null || cIndex === null || parseInt(cTime) + 10 * 60 < currentTimestamp );
 };

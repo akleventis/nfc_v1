@@ -132,7 +132,7 @@ export default function Page() {
   return (
     <>
       {/* loading screen */}
-      <div class="lds-dual-ring"></div>
+      <div className="lds-dual-ring"></div>
       {/* content */}
       <div>{page}</div>
     </>
