@@ -36,7 +36,7 @@ const Writer = ({ text }) => {
     <div className="write-container">
       <Typewriter
         onInit={(typewriter) => {
-          typewriter.typeString(text).changeDelay(1).start();
+          typewriter.typeString(text).start();
         }}
         options={{
           delay: 40,
