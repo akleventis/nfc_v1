@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import { getEntries, convertTextToTwemoji } from "../../lib/contentful.jsx";
+import { getEntries } from "../../lib/contentful.jsx";
 import { handleCookies } from "../../lib/cookies.jsx";
 import Typewriter from "typewriter-effect";
 
@@ -101,7 +101,7 @@ const Main = ({ textBoxes, imageURL, person, index, totalPages }) => {
           </div>
           {textBoxes != undefined &&
             textBoxes.slice(0, currentIndex + 1).map((text, i) => {
-              return <Writer text={convertTextToTwemoji(text)} key={i} />;
+              return <Writer text={text} key={i} />;
             })}
         </section>
       </ImageLoader>

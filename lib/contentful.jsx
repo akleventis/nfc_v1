@@ -1,5 +1,4 @@
 import { createClient } from "contentful";
-import twemoji from "twemoji";
 
 const contentTypeID = "pages";
 const spaceID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
@@ -25,12 +24,4 @@ export const getEntries = async () => {
   }
 
   return entries;
-};
-
-// allow for emojis across all devices
-export const convertTextToTwemoji = (text) => {
-  return twemoji.parse(text, {
-    folder: "svg",
-    ext: ".svg",
-  });
 };
