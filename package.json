@@ -22,5 +22,8 @@
     "@types/react": "19.1.0",
     "sass": "^1.106.1",
     "typescript": "5.8.2"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }
