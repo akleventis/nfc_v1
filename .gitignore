@@ -24,8 +24,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# env files (secrets come from 1Password via .env.tpl)
+.env*
+!.env.tpl
+!.env.example
 
 # typescript
 *.tsbuildinfo
@@ -33,3 +35,8 @@ next-env.d.ts
 
 # personal
 .txt
+
+# data never goes in git
+*.csv
+*.db
+*.sqlite

@@ -11,6 +11,16 @@ Routes are dynamically fetched from a CMS and created upon page load. Browser co
 
 This takes the user on an interactive journey through personalized content and allows for updates to be rolled out to individual routes on the fly. 
 
+### Setup
+---
+```bash
+mise install                          # Node 24 (pinned in mise.toml)
+mise run setup                        # secret-scanning hook + npm ci
+op inject -i .env.tpl -o .env.local   # Contentful keys from 1Password
+mise run dev
+```
+Secrets: 1Password, **Dev** vault, item **`nfc`**. Variables are listed in `.env.example`. Deployed on Netlify (Node version from `.node-version`).
+
 ### Content Management System 
 ---
 - This project uses [Contentful](https://contentful.com)
@@ -44,10 +54,9 @@ This takes the user on an interactive journey through personalized content and a
 
 ### Import Contentful content module's
 1. create a contentful account and grab your [space id](https://www.contentful.com/help/find-space-id/)
-2. `brew install contentful-cli`
-3. `contentful login`
-4. paste auth into terminal
-5. `contentful space import --content-file lib/models_export.json --space-id {space_id}`
+2. `npx contentful-cli login`
+3. paste auth into terminal
+4. `npx contentful-cli space import --content-file lib/models_export.json --space-id {space_id}`
 > see [lib/module_export.json](./lib/models_export.json)
 
 This creates the content models for you; `[slug]` is the `Title` field in Pages model
